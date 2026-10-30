@@ -382,6 +382,52 @@
     });
   }
 
+  /* Cupons: toque para copiar */
+  function copiarTexto(texto) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(texto);
+    return new Promise(function (ok, falha) {
+      var campo = el("textarea", { readonly: true, style: "position:fixed;opacity:0" });
+      campo.value = texto;
+      document.body.appendChild(campo);
+      campo.select();
+      try { document.execCommand("copy") ? ok() : falha(); } catch (e) { falha(e); }
+      campo.remove();
+    });
+  }
+
+  function iniciarCupons() {
+    var grade = document.querySelector("[data-cupons]");
+    var aviso = document.querySelector("[data-cupom-aviso]");
+    if (!grade || !conteudo.cupons) return;
+
+    conteudo.cupons.forEach(function (cupom) {
+      var marca = cupom.logo
+        ? el("img", { class: "cupom__logo", src: cupom.logo, alt: cupom.marca, loading: "lazy" })
+        : el("span", { class: "cupom__nome", text: cupom.marca });
+      var botao = el("button", { class: "cupom", type: "button", "data-codigo": cupom.codigo, "aria-label": "Copiar cupom " + cupom.codigo + " da " + cupom.marca }, [
+        el("span", { class: "cupom__marca" }, [marca]),
+        el("span", { class: "cupom__codigo", text: cupom.codigo }),
+        el("span", { class: "cupom__acao", "aria-hidden": "true", text: "Copiar cupom" })
+      ]);
+      grade.appendChild(el("li", null, [botao]));
+    });
+
+    grade.addEventListener("click", function (e) {
+      var botao = e.target.closest(".cupom");
+      if (!botao) return;
+      var codigo = botao.getAttribute("data-codigo");
+      var acao = botao.querySelector(".cupom__acao");
+      copiarTexto(codigo).then(function () {
+        botao.classList.add("copiado");
+        acao.textContent = "Copiado!";
+        if (aviso) aviso.textContent = "Cupom " + codigo + " copiado.";
+        setTimeout(function () { botao.classList.remove("copiado"); acao.textContent = "Copiar cupom"; }, 2200);
+      }, function () {
+        acao.textContent = "Selecione e copie: " + codigo;
+      });
+    });
+  }
+
   /* Contato */
   function iniciarContato() {
     var area = document.querySelector("[data-contato]");
@@ -520,6 +566,7 @@
   iniciarServicos();
   iniciarTrabalhos();
   iniciarMarcas();
+  iniciarCupons();
   iniciarContato();
   iniciarSurgir();
   iniciarRevelarPalavras();

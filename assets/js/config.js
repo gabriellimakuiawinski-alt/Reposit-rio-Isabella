@@ -4,10 +4,10 @@
  */
 window.SITE_CONFIG = {
   // Número do WhatsApp com código do país e DDD, só números. Ex.: "5511999999999"
-  whatsapp: "",
+  whatsapp: "5511946696554",
 
   // Usuário do Instagram, sem @. Ex.: "isabellakuiawinski"
-  instagram: "",
+  instagram: "isaaholivr",
 
   // E-mail profissional. Ex.: "contato@exemplo.com"
   email: "",

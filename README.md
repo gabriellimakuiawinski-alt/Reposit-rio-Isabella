@@ -48,13 +48,17 @@ Em `assets/js/conteudo.js`, dentro de `trabalhos: [ ]`:
 
 Com `url`, o clique abre a publicação original em nova aba. Para abrir um vídeo no próprio site, preencha `video: "assets/video/arquivo.mp4"`.
 
-Sem `url`, o clique amplia a foto no próprio site. Os trabalhos atuais ainda não têm link: preencha `url` com o endereço da publicação no Instagram ou TikTok.
+Com `url`, o clique abre o Reel original. Sem `url`, a foto amplia no próprio site. As capas dos Reels ficam em `assets/img/capas/reel-XX.jpg`.
 
 ## Logotipos
 
-22 das 26 marcas já têm logotipo em `assets/img/logos/`, baixados dos sites oficiais das marcas, da Wikimedia Commons e do Seeklogo. Faltam Elseve, Mushin, Saint Germain e Scarlet, que aparecem com o nome em tipografia.
+28 das 30 marcas já têm logotipo em `assets/img/logos/`, baixados dos sites oficiais das marcas, da Wikimedia Commons e do Seeklogo. Faltam Elseve e Mushin, que aparecem com o nome em tipografia. Os logos de Saint Germain, Scarlet e Braé foram recortados dos cards da bio da Isa.
 
-Para trocar ou adicionar um logo, salve o arquivo (SVG ou PNG com fundo transparente) em `assets/img/logos/` e preencha o campo `logo` da marca em `conteudo.js`. No computador, os logos ficam em tom neutro e ganham cor ao passar o mouse; no celular, aparecem sempre coloridos.
+Para trocar ou adicionar um logo, salve o arquivo (SVG ou PNG com fundo transparente) em `assets/img/logos/` e preencha o campo `logo` da marca em `conteudo.js`. Os logos aparecem nas cores originais.
+
+## Cupons
+
+Os cupons ficam em `cupons` no `conteudo.js`, com marca, código e logo. No site, tocar no cupom copia o código.
 
 ## Compartilhamento em redes sociais
 
