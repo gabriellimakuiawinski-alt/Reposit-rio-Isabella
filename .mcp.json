@@ -2,15 +2,31 @@
   "mcpServers": {
     "shadcn": {
       "command": "npx",
-      "args": ["-y", "shadcn@4.23.0", "mcp"]
+      "args": [
+        "-y",
+        "shadcn@4.23.0",
+        "mcp"
+      ]
     },
     "magic": {
       "command": "npx",
-      "args": ["-y", "@21st-dev/magic@0.2.3", "API_KEY=\"${TWENTYFIRST_API_KEY}\""]
+      "args": [
+        "-y",
+        "@21st-dev/magic@0.2.3",
+        "API_KEY=\"${TWENTYFIRST_API_KEY}\""
+      ]
     },
     "chrome-devtools": {
       "command": "npx",
-      "args": ["-y", "chrome-devtools-mcp@1.12.0", "--headless", "--no-sandbox"]
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@1.12.0",
+        "--headless",
+        "--isolated",
+        "--executablePath=/opt/pw-browsers/chromium",
+        "--chrome-arg=--no-sandbox",
+        "--chrome-arg=--disable-setuid-sandbox"
+      ]
     }
   }
 }
