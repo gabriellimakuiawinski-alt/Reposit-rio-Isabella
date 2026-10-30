@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Isabella Kuiawinski, criadora de conteúdo</title>
+  <meta name="description" content="Isabella Kuiawinski, criadora de conteúdo e lash designer. Conteúdo para marcas, UGC, produção de foto e vídeo, cobertura de eventos e resenhas de produtos.">
+  <meta name="theme-color" content="#F5F1E9">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Isabella Kuiawinski, criadora de conteúdo">
+  <meta property="og:description" content="Conteúdos que conectam marcas, experiências e pessoas através do meu olhar.">
+  <!-- Quando houver uma foto de compartilhamento, salve em assets/img/fotos/compartilhamento.jpg (1200x630) e descomente:
+  <meta property="og:image" content="assets/img/fotos/compartilhamento.jpg"> -->
+  <script>document.documentElement.classList.add("js")</script>
+  <link rel="icon" href="assets/img/graficos/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- Navegação -->
+  <header class="topo" id="topo">
+    <a class="monograma" href="#inicio" aria-label="Isabella Kuiawinski, início">
+      <span aria-hidden="true">IK</span>
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <ul class="nav__lista">
+        <li><a href="#sobre">Sobre mim</a></li>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#trabalhos">Trabalhos</a></li>
+        <li><a href="#marcas">Marcas</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <button class="menu-botao" type="button" aria-expanded="false" aria-controls="menu-movel">
+      <span class="menu-botao__traco" aria-hidden="true"></span>
+      <span class="menu-botao__texto">Menu</span>
+    </button>
+  </header>
+
+  <div class="menu-movel" id="menu-movel" hidden>
+    <nav aria-label="Principal (celular)">
+      <ul>
+        <li><a href="#sobre">Sobre mim</a></li>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#trabalhos">Trabalhos e cases</a></li>
+        <li><a href="#marcas">Marcas</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main id="conteudo">
+    <!-- Abertura -->
+    <section class="hero" id="inicio" aria-labelledby="hero-nome">
+      <div class="hero__texto">
+        <h1 class="hero__nome" id="hero-nome">
+          <span class="hero__linha hero__linha--1">Isabella</span>
+          <span class="hero__linha hero__linha--2">Kuiawinski</span>
+        </h1>
+        <p class="hero__descricao">Criadora de conteúdo</p>
+        <a class="hero__convite" href="#trabalhos">
+          <span>Ver portfólio</span>
+          <svg aria-hidden="true" viewBox="0 0 12 28" width="12" height="28"><path d="M6 0v26M1 21l5 6 5-6" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        </a>
+      </div>
+
+      <figure class="hero__foto">
+        <div class="arco">
+          <div class="foto">
+            <!-- Foto principal: salve como assets/img/fotos/hero.jpg (vertical, mínimo 1200px de altura) -->
+            <img src="assets/img/fotos/hero.jpg" alt="Isabella Kuiawinski" width="900" height="1200" fetchpriority="high"
+                 onerror="this.parentElement.classList.add('foto--vazia');this.remove()">
+            <span class="foto__aviso" aria-hidden="true">Foto da Isa</span>
+          </div>
+        </div>
+        <svg class="raminho raminho--hero" aria-hidden="true" viewBox="0 0 120 160"><use href="#raminho"/></svg>
+      </figure>
+    </section>
+
+    <!-- Sobre mim -->
+    <section class="sobre" id="sobre" aria-labelledby="sobre-titulo">
+      <figure class="sobre__foto revelar">
+        <div class="foto foto--retrato">
+          <!-- Foto da seção Sobre: assets/img/fotos/sobre.jpg (vertical) -->
+          <img src="assets/img/fotos/sobre.jpg" alt="Isa em um momento do dia a dia" width="800" height="1000" loading="lazy"
+               onerror="this.parentElement.classList.add('foto--vazia');this.remove()">
+          <span class="foto__aviso" aria-hidden="true">Foto da Isa</span>
+        </div>
+      </figure>
+
+      <div class="sobre__texto">
+        <h2 class="titulo revelar" id="sobre-titulo">Sobre mim</h2>
+        <p class="sobre__ola">Oi, eu sou a Isa!</p>
+        <p class="sobre__lead">Tenho 25 anos e sou a criadora de conteúdo que compartilha o que vive &amp; como enxerga o mundo.</p>
+
+        <div class="sobre__mais" id="sobre-mais">
+          <div class="sobre__mais-interno">
+          <p>Eu gosto de registrar todas as minhas vivências, meus treinos, minhas descobertas, viagens, minhas formas de praticar o autocuidado, um evento incrível, uma ideia que tive no meio do dia, uma reflexão que me pega tarde da noite ou algo que decido criar em um dia comum.</p>
+          <blockquote class="sobre__citacao"><p>Tudo pelo meu olhar, e é por ele que eu quero me conectar com você.</p></blockquote>
+          <p>Fora das telas, sou lash designer e tenho meu próprio studio de cílios. Também faço peças em crochê, que é meu jeito de desacelerar e criar algo com a minha identidade.</p>
+          <p>Durante minha trajetória, tive o prazer de trabalhar com algumas marcas que se conectaram com a minha visão de mundo. E agora, espero que possamos criar algo incrível juntos através dessa mesma perspectiva!</p>
+          </div>
+        </div>
+
+        <button class="link-botao" type="button" aria-expanded="false" aria-controls="sobre-mais" data-alternar-sobre>
+          <span data-rotulo>Conheça a Isa</span>
+          <svg aria-hidden="true" viewBox="0 0 14 14" width="14" height="14"><path d="M7 1v12M1 7h12" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Serviços -->
+    <section class="servicos" id="servicos" aria-labelledby="servicos-titulo">
+      <div class="servicos__cabeca">
+        <h2 class="titulo revelar" id="servicos-titulo">O que podemos criar juntos</h2>
+        <p class="subtitulo">Conteúdos que conectam marcas, experiências e pessoas através do meu olhar.</p>
+        <svg class="raminho raminho--servicos" aria-hidden="true" viewBox="0 0 120 160"><use href="#raminho"/></svg>
+      </div>
+      <ol class="servicos__lista" data-servicos></ol>
+    </section>
+
+    <!-- Trabalhos e cases -->
+    <section class="trabalhos" id="trabalhos" aria-labelledby="trabalhos-titulo">
+      <div class="trabalhos__cabeca">
+        <h2 class="titulo revelar" id="trabalhos-titulo">Meu olhar em movimento</h2>
+        <p class="subtitulo">Histórias, experiências e marcas que fizeram parte da minha jornada.</p>
+      </div>
+      <div class="filtros" role="tablist" aria-label="Categorias de trabalhos" data-filtros></div>
+      <div class="galeria" id="galeria" role="tabpanel" aria-live="polite" data-galeria></div>
+    </section>
+
+    <!-- Marcas -->
+    <section class="marcas" id="marcas" aria-labelledby="marcas-titulo">
+      <h2 class="titulo revelar" id="marcas-titulo">Marcas que fazem parte da minha história</h2>
+      <ul class="marcas__grade" data-marcas></ul>
+    </section>
+
+    <!-- Contato -->
+    <section class="contato" id="contato" aria-labelledby="contato-titulo">
+      <svg class="raminho raminho--contato" aria-hidden="true" viewBox="0 0 120 160"><use href="#raminho"/></svg>
+      <h2 class="titulo titulo--grande revelar" id="contato-titulo">Vamos criar algo juntos?</h2>
+      <p class="contato__texto">Tem uma ideia, um projeto ou uma marca que combina com o meu universo? Vamos conversar!</p>
+      <div class="contato__acoes" data-contato></div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <p class="rodape__nome">Isabella Kuiawinski</p>
+    <p class="rodape__ano">© <span data-ano></span></p>
+  </footer>
+
+  <!-- Visualização ampliada de vídeos -->
+  <dialog class="visor" data-visor aria-label="Visualização do trabalho">
+    <button class="visor__fechar" type="button" data-fechar-visor>Fechar</button>
+    <div class="visor__midia" data-visor-midia></div>
+  </dialog>
+
+  <!-- Ilustração botânica reutilizada -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="raminho" viewBox="0 0 120 160">
+      <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+        <path d="M62 158C60 120 58 82 66 44 70 26 76 12 84 2"/>
+        <path d="M61 128c-14-4-26-14-30-28 14 2 26 12 30 28z"/>
+        <path d="M60 104c12-6 22-18 24-32-12 4-22 16-24 32z"/>
+        <path d="M61 82c-12-6-20-18-22-30 12 4 20 16 22 30z"/>
+        <path d="M64 60c10-6 18-16 18-28-10 4-17 14-18 28z"/>
+        <path d="M69 38c-8-4-13-12-14-21 8 3 13 11 14 21z"/>
+      </g>
+    </symbol>
+  </svg>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/conteudo.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
