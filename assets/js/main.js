@@ -12,7 +12,6 @@
         var valor = attrs[chave];
         if (valor === null || valor === undefined || valor === false) return;
         if (chave === "text") node.textContent = valor;
-        else if (chave === "html") node.innerHTML = valor;
         else node.setAttribute(chave, valor === true ? "" : valor);
       });
     }
@@ -36,6 +35,20 @@
       rel: href ? "noopener" : null,
       text: texto
     });
+  }
+
+  // Foto com espaço reservado: se o arquivo não existir, mostra a composição de luz.
+  function foto(src, alt, tom, aviso, eager) {
+    var caixa = el("div", { class: "foto " + (tom || "foto--quente") });
+    if (src) {
+      var img = el("img", { src: src, alt: alt || "", loading: eager ? null : "lazy", decoding: "async" });
+      img.addEventListener("error", function () { caixa.classList.add("foto--vazia"); img.remove(); });
+      caixa.appendChild(img);
+    } else {
+      caixa.classList.add("foto--vazia");
+    }
+    if (aviso) caixa.appendChild(el("span", { class: "foto__aviso", text: aviso }));
+    return caixa;
   }
 
   /* Entrada da página */
@@ -62,85 +75,83 @@
         menu.querySelector("a").focus();
       } else {
         menu.classList.remove("aberto");
-        setTimeout(function () { if (!menu.classList.contains("aberto")) menu.hidden = true; }, reduzirMovimento ? 0 : 250);
+        setTimeout(function () { if (!menu.classList.contains("aberto")) menu.hidden = true; }, reduzirMovimento ? 0 : 300);
       }
     }
 
-    botao.addEventListener("click", function () {
-      abrir(botao.getAttribute("aria-expanded") !== "true");
-    });
-    menu.addEventListener("click", function (e) {
-      if (e.target.closest("a")) abrir(false);
-    });
+    botao.addEventListener("click", function () { abrir(botao.getAttribute("aria-expanded") !== "true"); });
+    menu.addEventListener("click", function (e) { if (e.target.closest("a")) abrir(false); });
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && botao.getAttribute("aria-expanded") === "true") {
-        abrir(false);
-        botao.focus();
-      }
+      if (e.key === "Escape" && botao.getAttribute("aria-expanded") === "true") { abrir(false); botao.focus(); }
     });
   }
 
-  /* Sobre mim: texto completo */
-  function iniciarSobre() {
-    var botao = document.querySelector("[data-alternar-sobre]");
-    var mais = document.getElementById("sobre-mais");
-    if (!botao || !mais) return;
-    var rotulo = botao.querySelector("[data-rotulo]");
-    botao.addEventListener("click", function () {
-      var aberto = botao.getAttribute("aria-expanded") !== "true";
-      botao.setAttribute("aria-expanded", String(aberto));
-      mais.classList.toggle("aberto", aberto);
-      rotulo.textContent = aberto ? "Ler menos" : "Conheça a Isa";
-    });
+  /* Faixa contínua com os serviços */
+  function iniciarFaixa() {
+    var trilho = document.querySelector("[data-faixa]");
+    if (!trilho || !conteudo.servicos) return;
+    function grupo() {
+      var g = el("div", { class: "faixa__grupo" });
+      conteudo.servicos.forEach(function (s) {
+        g.appendChild(el("span", { class: "faixa__item", text: s.titulo }));
+        g.appendChild(el("span", { class: "faixa__estrela", text: "✦" }));
+      });
+      return g;
+    }
+    // Dois grupos idênticos: a animação desloca 50% e recomeça sem emenda.
+    trilho.appendChild(grupo());
+    trilho.appendChild(grupo());
   }
 
-  /* Serviços */
+  /* Serviços: lista que abre um por vez e foto grande que acompanha */
   var ROMANOS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+  var TONS = ["foto--quente", "foto--oliva", "foto--areia", "foto--noite", "foto--rosa"];
 
   function iniciarServicos() {
     var lista = document.querySelector("[data-servicos]");
+    var midia = document.querySelector("[data-servicos-midia]");
     if (!lista || !conteudo.servicos) return;
 
+    var quadros = [];
     conteudo.servicos.forEach(function (servico, i) {
+      if (midia) {
+        var quadro = el("div", { class: "servicos__quadro" + (i === 0 ? " ativo" : "") }, [
+          foto(servico.imagem, "", TONS[i % TONS.length], "Foto · " + servico.titulo)
+        ]);
+        midia.appendChild(quadro);
+        quadros.push(quadro);
+      }
+
       var idPainel = "servico-" + i;
       var mensagem = String(config.mensagemServico || "").replace("{servico}", servico.titulo);
 
       var botao = el("button", {
-        class: "servico__botao",
-        type: "button",
-        "aria-expanded": i === 0 ? "true" : "false",
-        "aria-controls": idPainel
+        class: "servico__botao", type: "button",
+        "aria-expanded": i === 0 ? "true" : "false", "aria-controls": idPainel
       }, [
         el("span", { class: "servico__numero", "aria-hidden": "true", text: ROMANOS[i] || String(i + 1) }),
         el("span", { class: "servico__titulo", text: servico.titulo }),
         el("span", { class: "servico__sinal", "aria-hidden": "true" })
       ]);
 
-      var corpo = el("div", { class: "servico__corpo" }, [
-        el("p", { class: "servico__descricao", text: servico.descricao }),
-        botaoOrcamento("Solicitar orçamento", mensagem)
-      ]);
-
-      var interno = [corpo];
-      if (servico.imagem) {
-        interno.unshift(el("div", { class: "servico__imagem" }, [
-          el("img", { src: servico.imagem, alt: "", loading: "lazy" })
-        ]));
-      }
-
       var painel = el("div", {
-        class: "servico__painel" + (i === 0 ? " aberto" : ""),
-        id: idPainel,
-        role: "region",
-        "aria-label": servico.titulo
-      }, [el("div", { class: "servico__painel-interno" }, interno)]);
+        class: "servico__painel" + (i === 0 ? " aberto" : ""), id: idPainel, role: "region", "aria-label": servico.titulo
+      }, [el("div", { class: "servico__painel-interno" }, [
+        el("div", { class: "servico__corpo" }, [
+          el("p", { class: "servico__descricao", text: servico.descricao }),
+          botaoOrcamento("Solicitar orçamento", mensagem)
+        ])
+      ])]);
 
-      var item = el("li", { class: "servico" + (i === 0 ? " servico--aberto" : "") }, [
+      lista.appendChild(el("li", { class: "servico" + (i === 0 ? " servico--aberto" : ""), "data-indice": i }, [
         el("h3", { class: "servico__cabeca" }, [botao]),
         painel
-      ]);
-      lista.appendChild(item);
+      ]));
     });
+
+    function mostrarQuadro(i) {
+      quadros.forEach(function (q, j) { q.classList.toggle("ativo", j === i); });
+    }
 
     lista.addEventListener("click", function (e) {
       var botao = e.target.closest(".servico__botao");
@@ -152,21 +163,22 @@
         b.setAttribute("aria-expanded", String(ativo));
         item.classList.toggle("servico--aberto", ativo);
         item.querySelector(".servico__painel").classList.toggle("aberto", ativo);
+        if (ativo) mostrarQuadro(Number(item.getAttribute("data-indice")));
       });
+    });
+
+    lista.addEventListener("mouseover", function (e) {
+      var item = e.target.closest(".servico");
+      if (item) mostrarQuadro(Number(item.getAttribute("data-indice")));
+    });
+    lista.addEventListener("mouseleave", function () {
+      var aberto = lista.querySelector(".servico--aberto");
+      if (aberto) mostrarQuadro(Number(aberto.getAttribute("data-indice")));
     });
   }
 
   /* Trabalhos e cases */
   var ROTULO_TIPO = { reels: "Reels", video: "Vídeo", post: "Publicação" };
-
-  function iconeTipo(tipo) {
-    var span = el("span", { class: "trabalho__tipo" });
-    var desenho = tipo === "post"
-      ? '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><rect x="1" y="1" width="10" height="10" fill="none" stroke="currentColor"/></svg>'
-      : '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3 1.5v9l7-4.5z" fill="currentColor"/></svg>';
-    span.innerHTML = desenho + "<span>" + (ROTULO_TIPO[tipo] || "Publicação") + "</span>";
-    return span;
-  }
 
   function nomeCategoria(id) {
     var cat = (conteudo.categorias || []).filter(function (c) { return c.id === id; })[0];
@@ -174,51 +186,43 @@
   }
 
   function cartaoTrabalho(trabalho, indice) {
-    var formato = trabalho.tipo === "post" ? "quadrado" : "vertical";
-    var capa = el("div", { class: "trabalho__capa" }, [
-      trabalho.capa
-        ? el("img", { src: trabalho.capa, alt: trabalho.titulo ? "Capa de " + trabalho.titulo : "", loading: "lazy", decoding: "async" })
-        : null,
-      iconeTipo(trabalho.tipo)
-    ]);
+    var capa = foto(trabalho.capa, trabalho.titulo ? "Capa de " + trabalho.titulo : "", TONS[indice % TONS.length]);
+    capa.classList.add("trabalho__capa");
+    capa.appendChild(el("span", { class: "trabalho__tipo", text: ROTULO_TIPO[trabalho.tipo] || "Publicação" }));
+
     var legenda = el("div", { class: "trabalho__legenda" }, [
       el("span", { class: "trabalho__categoria", text: nomeCategoria(trabalho.categoria) }),
       trabalho.titulo ? el("span", { class: "trabalho__titulo", text: trabalho.titulo }) : null,
       trabalho.descricao ? el("span", { class: "trabalho__descricao", text: trabalho.descricao }) : null
     ]);
 
-    var classe = "trabalho trabalho--" + formato;
     var alvo;
     if (trabalho.video) {
-      alvo = el("button", { class: classe, type: "button", "data-video": trabalho.video, "aria-label": "Assistir " + (trabalho.titulo || "vídeo") });
+      alvo = el("button", { class: "trabalho", type: "button", "data-video": trabalho.video, "aria-label": "Assistir " + (trabalho.titulo || "vídeo") });
     } else if (trabalho.url) {
-      alvo = el("a", {
-        class: classe, href: trabalho.url, target: "_blank", rel: "noopener",
-        "aria-label": (trabalho.titulo || "Trabalho") + " (abre a publicação original em nova aba)"
-      });
+      alvo = el("a", { class: "trabalho", href: trabalho.url, target: "_blank", rel: "noopener", "aria-label": (trabalho.titulo || "Trabalho") + " (abre a publicação original em nova aba)" });
     } else {
-      alvo = el("div", { class: classe });
+      alvo = el("div", { class: "trabalho" });
     }
-    alvo.style.setProperty("--i", indice);
     alvo.appendChild(capa);
     alvo.appendChild(legenda);
+    alvo.style.setProperty("--i", indice);
     return el("li", { class: "galeria__item" }, [alvo]);
   }
 
   function espacoReservado(categoriaId, indice) {
-    var vertical = indice % 3 !== 1;
-    var item = el("li", { class: "galeria__item" }, [
-      el("div", { class: "trabalho trabalho--reservado trabalho--" + (vertical ? "vertical" : "quadrado"), "aria-hidden": "true" }, [
-        el("div", { class: "trabalho__capa" }, [
-          el("span", { class: "trabalho__aviso", text: vertical ? "Capa do Reels" : "Capa da publicação" })
-        ]),
-        el("div", { class: "trabalho__legenda" }, [
-          el("span", { class: "trabalho__categoria", text: nomeCategoria(categoriaId) })
-        ])
+    var capa = el("div", { class: "foto trabalho__capa foto--vazia " + TONS[indice % TONS.length] }, [
+      el("span", { class: "foto__aviso", text: "Capa do trabalho" })
+    ]);
+    var alvo = el("div", { class: "trabalho trabalho--reservado", "aria-hidden": "true" }, [
+      capa,
+      el("div", { class: "trabalho__legenda" }, [
+        el("span", { class: "trabalho__categoria", text: nomeCategoria(categoriaId) }),
+        el("span", { class: "trabalho__titulo", text: "Em breve" })
       ])
     ]);
-    item.firstChild.style.setProperty("--i", indice);
-    return item;
+    alvo.style.setProperty("--i", indice);
+    return el("li", { class: "galeria__item" }, [alvo]);
   }
 
   function iniciarTrabalhos() {
@@ -232,15 +236,9 @@
 
     categorias.forEach(function (cat, i) {
       filtros.appendChild(el("button", {
-        class: "filtro",
-        type: "button",
-        role: "tab",
-        id: "filtro-" + cat.id,
-        "aria-selected": i === 0 ? "true" : "false",
-        "aria-controls": "galeria",
-        tabindex: i === 0 ? "0" : "-1",
-        "data-categoria": cat.id,
-        text: cat.nome
+        class: "filtro", type: "button", role: "tab", id: "filtro-" + cat.id,
+        "aria-selected": i === 0 ? "true" : "false", "aria-controls": "galeria",
+        tabindex: i === 0 ? "0" : "-1", "data-categoria": cat.id, text: cat.nome
       }));
     });
 
@@ -251,7 +249,9 @@
       if (itens.length) {
         itens.forEach(function (t, i) { lista.appendChild(cartaoTrabalho(t, i)); });
       } else if (config.mostrarEspacosReservados) {
-        var ids = categoriaId === "todos" ? (conteudo.categorias || []).map(function (c) { return c.id; }) : [categoriaId, categoriaId, categoriaId];
+        var ids = categoriaId === "todos"
+          ? (conteudo.categorias || []).map(function (c) { return c.id; }).concat(["beleza", "moda", "eventos"])
+          : [categoriaId, categoriaId, categoriaId, categoriaId, categoriaId];
         ids.forEach(function (id, i) { lista.appendChild(espacoReservado(id, i)); });
       } else {
         var vazio = el("div", { class: "galeria__vazio" }, [
@@ -285,8 +285,8 @@
       setTimeout(function () {
         montar(id);
         galeria.classList.remove("trocando");
-        setTimeout(function () { galeria.style.minHeight = ""; }, 400);
-      }, 180);
+        setTimeout(function () { galeria.style.minHeight = ""; }, 500);
+      }, 220);
     }
 
     filtros.addEventListener("click", function (e) {
@@ -310,6 +310,16 @@
       }
     });
 
+    // Foco: ao passar o mouse num trabalho, os outros recuam (inspirado em focus-cards).
+    galeria.addEventListener("mouseover", function (e) {
+      var item = e.target.closest(".galeria__item");
+      galeria.classList.toggle("com-foco", !!item);
+      galeria.querySelectorAll(".galeria__item").forEach(function (li) { li.classList.toggle("em-foco", li === item); });
+    });
+    galeria.addEventListener("mouseleave", function () {
+      galeria.classList.remove("com-foco");
+    });
+
     galeria.setAttribute("aria-labelledby", "filtro-todos");
     montar(atual);
     iniciarVisor(galeria);
@@ -326,34 +336,37 @@
       var botao = e.target.closest("[data-video]");
       if (!botao) return;
       origem = botao;
-      midia.replaceChildren(el("video", {
-        src: botao.getAttribute("data-video"),
-        controls: true,
-        autoplay: true,
-        playsinline: true
-      }));
+      midia.replaceChildren(el("video", { src: botao.getAttribute("data-video"), controls: true, autoplay: true, playsinline: true }));
       visor.showModal();
     });
 
     function fechar() { visor.close(); }
     visor.querySelector("[data-fechar-visor]").addEventListener("click", fechar);
     visor.addEventListener("click", function (e) { if (e.target === visor) fechar(); });
-    visor.addEventListener("close", function () {
-      midia.replaceChildren();
-      if (origem) origem.focus();
-    });
+    visor.addEventListener("close", function () { midia.replaceChildren(); if (origem) origem.focus(); });
   }
 
   /* Marcas */
   function iniciarMarcas() {
     var grade = document.querySelector("[data-marcas]");
+    var contagem = document.querySelector("[data-marcas-contagem]");
     if (!grade || !conteudo.marcas) return;
+    if (contagem) contagem.textContent = conteudo.marcas.length + " marcas com quem já criei";
+
     conteudo.marcas.forEach(function (marca) {
-      var item = el("li", { class: "marca" + (marca.logo ? "" : " marca--sem-logo") });
+      var item = el("li", { class: "marca" });
+      var nome = el("span", { class: "marca__nome", text: marca.nome });
       if (marca.logo) {
-        item.appendChild(el("img", { src: marca.logo, alt: marca.nome, loading: "lazy", decoding: "async" }));
+        var img = el("img", { src: marca.logo, alt: marca.nome, loading: "lazy", decoding: "async" });
+        img.addEventListener("error", function () { img.replaceWith(nome); item.classList.add("marca--sem-logo"); });
+        // Logos quadrados ou verticais ganham mais altura para ter o mesmo peso visual dos horizontais.
+        img.addEventListener("load", function () {
+          if (img.naturalWidth / img.naturalHeight < 1.6) item.classList.add("marca--quadrada");
+        });
+        item.appendChild(img);
       } else {
-        item.appendChild(el("span", { class: "marca__nome", text: marca.nome }));
+        item.classList.add("marca--sem-logo");
+        item.appendChild(nome);
       }
       grade.appendChild(item);
     });
@@ -366,7 +379,7 @@
     var temCanal = false;
 
     if (linkWhatsApp("")) {
-      area.appendChild(botaoOrcamento("Solicitar orçamento pelo WhatsApp", config.mensagemGeral, "botao botao--grande"));
+      area.appendChild(botaoOrcamento("Solicitar orçamento pelo WhatsApp", config.mensagemGeral, "botao botao--claro"));
       temCanal = true;
     }
 
@@ -387,9 +400,9 @@
     }
   }
 
-  /* Revelação discreta de títulos e fotos */
-  function iniciarRevelar() {
-    var alvos = document.querySelectorAll(".revelar");
+  /* Entrada com desfoque (inspirado em blur-fade) */
+  function iniciarSurgir() {
+    var alvos = document.querySelectorAll(".surgir");
     if (reduzirMovimento || !("IntersectionObserver" in window)) {
       alvos.forEach(function (a) { a.classList.add("visivel"); });
       return;
@@ -401,33 +414,84 @@
           observador.unobserve(entrada.target);
         }
       });
-    }, { rootMargin: "0px 0px -10% 0px" });
+    }, { rootMargin: "0px 0px -8% 0px" });
     alvos.forEach(function (a) { observador.observe(a); });
   }
 
-  /* Topo muda de fundo após a abertura */
+  /* Frase que acende palavra por palavra ao rolar (inspirado em text-reveal, sem prender a rolagem) */
+  function iniciarRevelarPalavras() {
+    var frase = document.querySelector("[data-revelar-palavras]");
+    if (!frase) return;
+    var texto = frase.textContent.trim();
+    frase.setAttribute("aria-label", texto);
+    frase.textContent = "";
+    var palavras = texto.split(/\s+/).map(function (p) {
+      var s = el("span", { class: "palavra", "aria-hidden": "true", text: p });
+      frase.appendChild(s);
+      frase.appendChild(document.createTextNode(" "));
+      return s;
+    });
+    if (reduzirMovimento) { palavras.forEach(function (p) { p.classList.add("acesa"); }); return; }
+
+    var agendado = false;
+    function atualizar() {
+      agendado = false;
+      var r = frase.getBoundingClientRect();
+      var alto = window.innerHeight;
+      // 0 quando a frase entra por baixo, 1 quando chega a 35% do topo
+      var progresso = Math.min(1, Math.max(0, (alto - r.top) / (alto * 0.65 + r.height * 0.5)));
+      var acesas = Math.round(progresso * palavras.length);
+      palavras.forEach(function (p, i) { p.classList.toggle("acesa", i < acesas); });
+    }
+    window.addEventListener("scroll", function () {
+      if (!agendado) { agendado = true; requestAnimationFrame(atualizar); }
+    }, { passive: true });
+    atualizar();
+  }
+
+  /* Topo: transparente sobre a abertura, sólido depois */
   function iniciarTopo() {
     var topo = document.getElementById("topo");
-    if (!topo) return;
-    var ultimo = false;
+    var hero = document.getElementById("inicio");
+    if (!topo || !hero) return;
+    var ultimo = null;
     function verificar() {
-      var rolou = window.scrollY > 40;
-      if (rolou !== ultimo) { topo.classList.toggle("topo--rolado", rolou); ultimo = rolou; }
+      var rolou = window.scrollY > hero.offsetHeight - 80;
+      if (rolou !== ultimo) { topo.classList.toggle("topo--solido", rolou); ultimo = rolou; }
     }
     window.addEventListener("scroll", verificar, { passive: true });
+    window.addEventListener("resize", verificar);
     verificar();
+  }
+
+  /* Leve deslocamento da foto da abertura ao rolar */
+  function iniciarParallaxHero() {
+    var midia = document.querySelector(".hero__midia");
+    if (!midia || reduzirMovimento) return;
+    var agendado = false;
+    window.addEventListener("scroll", function () {
+      if (agendado) return;
+      agendado = true;
+      requestAnimationFrame(function () {
+        agendado = false;
+        var y = Math.min(window.scrollY, window.innerHeight);
+        midia.style.transform = "translate3d(0," + (y * 0.18).toFixed(1) + "px,0)";
+      });
+    }, { passive: true });
   }
 
   var ano = document.querySelector("[data-ano]");
   if (ano) ano.textContent = new Date().getFullYear();
 
   iniciarMenu();
-  iniciarSobre();
+  iniciarFaixa();
   iniciarServicos();
   iniciarTrabalhos();
   iniciarMarcas();
   iniciarContato();
-  iniciarRevelar();
+  iniciarSurgir();
+  iniciarRevelarPalavras();
   iniciarTopo();
+  iniciarParallaxHero();
   iniciarEntrada();
 })();

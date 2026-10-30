@@ -8,27 +8,27 @@ window.SITE_CONTEUDO = {
     {
       titulo: "Conteúdo para marcas",
       descricao: "Reels, stories e posts para divulgar marcas no meu perfil, conectando produtos e experiências à minha rotina e à minha forma de criar conteúdo.",
-      imagem: "" // opcional, ex.: "assets/img/graficos/servico-marcas.jpg"
+      imagem: "assets/img/fotos/servico-marcas.jpg" // foto grande ao lado da lista
     },
     {
       titulo: "Conteúdo UGC",
       descricao: "Vídeos no estilo cliente real, produzidos para que as marcas utilizem em seus próprios canais de comunicação.",
-      imagem: ""
+      imagem: "assets/img/fotos/servico-ugc.jpg"
     },
     {
       titulo: "Produção de foto e vídeo",
       descricao: "Planejamento, captação, edição e entrega de conteúdos visuais pensados para comunicar ideias, experiências e produtos.",
-      imagem: ""
+      imagem: "assets/img/fotos/servico-producao.jpg"
     },
     {
       titulo: "Cobertura de eventos",
       descricao: "Registro e divulgação de eventos por meio de conteúdos que capturam momentos, experiências e detalhes importantes.",
-      imagem: ""
+      imagem: "assets/img/fotos/servico-eventos.jpg"
     },
     {
       titulo: "Resenha e experiência com produtos",
       descricao: "Teste e demonstração de produtos no dia a dia, apresentando experiências de forma natural e próxima.",
-      imagem: ""
+      imagem: "assets/img/fotos/servico-resenha.jpg"
     }
   ],
 
@@ -57,36 +57,36 @@ window.SITE_CONTEUDO = {
   trabalhos: [],
 
   /*
-   * Marcas. Quando tiver o arquivo oficial do logotipo, salve em
-   * assets/img/logos/ e preencha "logo" com o caminho (SVG ou PNG transparente).
-   * Sem logo, o nome da marca aparece no lugar.
+   * Marcas. Logotipos em assets/img/logos/ (SVG ou PNG transparente).
+   * Sem logo, o nome da marca aparece em tipografia no lugar.
+   * Faltam os arquivos de Elseve, Mushin, Saint Germain e Scarlet.
    */
   marcas: [
-    { nome: "Kibon", logo: "" },
-    { nome: "Keeta", logo: "" },
-    { nome: "Tampax", logo: "" },
-    { nome: "Mercado Livre", logo: "" },
-    { nome: "Fanta", logo: "" },
-    { nome: "Pantene", logo: "" },
-    { nome: "Verisure", logo: "" },
+    { nome: "Kibon", logo: "assets/img/logos/kibon.png" },
+    { nome: "Keeta", logo: "assets/img/logos/keeta.png" },
+    { nome: "Tampax", logo: "assets/img/logos/tampax.png" },
+    { nome: "Mercado Livre", logo: "assets/img/logos/mercado-livre.png" },
+    { nome: "Fanta", logo: "assets/img/logos/fanta.svg" },
+    { nome: "Pantene", logo: "assets/img/logos/pantene.png" },
+    { nome: "Verisure", logo: "assets/img/logos/verisure.png" },
     { nome: "Elseve", logo: "" },
-    { nome: "L'Oréal", logo: "" },
-    { nome: "Alva", logo: "" },
+    { nome: "L'Oréal", logo: "assets/img/logos/loreal.svg" },
+    { nome: "Alva", logo: "assets/img/logos/alva.png" },
     { nome: "Mushin", logo: "" },
-    { nome: "Aura Beauty", logo: "" },
-    { nome: "Guava", logo: "" },
-    { nome: "Probiotica", logo: "" },
-    { nome: "Avozon", logo: "" },
+    { nome: "Aura Beauty", logo: "assets/img/logos/aura-beauty.png" },
+    { nome: "Guava", logo: "assets/img/logos/guava.svg" },
+    { nome: "Probiotica", logo: "assets/img/logos/probiotica.svg" },
+    { nome: "Avozon", logo: "assets/img/logos/avozon.png" },
     { nome: "Saint Germain", logo: "" },
-    { nome: "MAC", logo: "" },
-    { nome: "Tupperware", logo: "" },
-    { nome: "Avvi", logo: "" },
-    { nome: "Oceane", logo: "" },
-    { nome: "Slow Beauty", logo: "" },
-    { nome: "TAO DEO", logo: "" },
-    { nome: "Euro Relógios", logo: "" },
+    { nome: "MAC", logo: "assets/img/logos/mac.png" },
+    { nome: "Tupperware", logo: "assets/img/logos/tupperware.png" },
+    { nome: "Avvi", logo: "assets/img/logos/avvi.svg" },
+    { nome: "Oceane", logo: "assets/img/logos/oceane.png" },
+    { nome: "Slow Beauty", logo: "assets/img/logos/slow-beauty.png" },
+    { nome: "TAO DEO", logo: "assets/img/logos/tao-deo.png" },
+    { nome: "Euro Relógios", logo: "assets/img/logos/euro-relogios.png" },
     { nome: "Scarlet", logo: "" },
-    { nome: "GE Beauty", logo: "" },
-    { nome: "Rituária", logo: "" }
+    { nome: "GE Beauty", logo: "assets/img/logos/ge-beauty.svg" },
+    { nome: "Rituária", logo: "assets/img/logos/rituaria.png" }
   ]
 };
