@@ -13,28 +13,23 @@ Site estático (HTML, CSS e JavaScript puros). Não precisa de instalação nem 
 
 Campos de contato vazios não aparecem no site. Sem número de WhatsApp, os botões "Solicitar orçamento" levam até a seção de contato.
 
-## Fotos e arquivos
+## Fotos e vídeos
 
-O site foi desenhado para fotos grandes. Enquanto um arquivo não existe, aparece uma composição de luz com uma etiqueta dizendo qual foto vai ali. Basta salvar a foto com o nome indicado:
+As fotos ficam em `assets/img/fotos/`. Para trocar uma foto, salve a nova com o mesmo nome:
 
 ```
-assets/img/fotos/
-  hero.jpg              abertura em tela cheia (mínimo 2000 px no lado maior)
-  sobre-1.jpg           retrato em arco da seção Sobre mim (vertical)
-  sobre-2.jpg           detalhe do studio de cílios (vertical)
-  sobre-3.jpg           peças de crochê (quadrada)
-  servico-marcas.jpg    uma foto por serviço (vertical), troca ao escolher o serviço
-  servico-ugc.jpg
-  servico-producao.jpg
-  servico-eventos.jpg
-  servico-resenha.jpg
-  contato.jpg           fundo da seção de contato (horizontal)
-assets/img/capas/       capas dos trabalhos (3:4)
-assets/img/logos/       logotipos das marcas
-assets/video/           vídeos que abrem no visor do próprio site
+hero.jpg                abertura (horizontal; hoje: selfie de jaqueta preta)
+sobre-1/2/3.jpg         colagem da seção Sobre mim (trem e porta vermelha)
+retrato-praia.jpg       foto ao lado da frase "Tudo pelo meu olhar"
+fora-1/2/3.jpg          colagem da seção Fora das telas (exposição, skate, cidade)
+faixa-mirante.jpg       faixa larga de foto antes dos serviços
+servico-*.jpg           uma foto por serviço; troca ao escolher o serviço
+mar-poster.jpg          quadro mostrado antes do vídeo do mar carregar
 ```
 
-Antes de subir as fotos, exporte em JPG ou WebP com até 2000 px no lado maior.
+Capas dos trabalhos: `assets/img/capas/`. Vídeos: `assets/video/mar.mp4` (o vídeo no arco do contato) e `assets/video/mar-fundo.mp4` (textura de mar desfocada no fundo, recortada do mesmo vídeo). Os dois vão e voltam para o loop não ter corte, e só tocam quando estão na tela.
+
+Antes de subir fotos novas, exporte em JPG com até 1800 px no lado maior.
 
 ## Adicionar um trabalho
 
@@ -53,7 +48,7 @@ Em `assets/js/conteudo.js`, dentro de `trabalhos: [ ]`:
 
 Com `url`, o clique abre a publicação original em nova aba. Para abrir um vídeo no próprio site, preencha `video: "assets/video/arquivo.mp4"`.
 
-Enquanto não há trabalhos, a galeria mostra molduras de exemplo. Antes de publicar, mude `mostrarEspacosReservados` para `false` em `config.js`.
+Sem `url`, o clique amplia a foto no próprio site. Os trabalhos atuais ainda não têm link: preencha `url` com o endereço da publicação no Instagram ou TikTok.
 
 ## Logotipos
 

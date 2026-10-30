@@ -21,5 +21,5 @@ window.SITE_CONFIG = {
 
   // true: mostra molduras de exemplo nas categorias que ainda não têm trabalhos
   // (útil enquanto o site está sendo montado). Mude para false antes de publicar.
-  mostrarEspacosReservados: true
+  mostrarEspacosReservados: false
 };

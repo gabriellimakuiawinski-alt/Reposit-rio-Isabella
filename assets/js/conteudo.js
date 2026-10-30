@@ -54,7 +54,18 @@ window.SITE_CONTEUDO = {
    *   video: ""                                    // opcional: "assets/video/arquivo.mp4" abre no visor do site
    * }
    */
-  trabalhos: [],
+  // Preencha "url" com o link da publicação original para o trabalho abrir no Instagram/TikTok.
+  trabalhos: [
+    { titulo: "Kibon · Carnaval de São Paulo 2026", categoria: "eventos", capa: "assets/img/capas/kibon-carnaval.jpg", url: "", tipo: "post" },
+    { titulo: "TAO DEO", categoria: "beleza", capa: "assets/img/capas/tao-deo.jpg", url: "", tipo: "post" },
+    { titulo: "Kibon · Carnaval", categoria: "eventos", capa: "assets/img/capas/kibon-picole.jpg", url: "", tipo: "post" },
+    { titulo: "", categoria: "viagem", capa: "assets/img/capas/mirante.jpg", url: "", tipo: "post" },
+    { titulo: "", categoria: "moda", capa: "assets/img/capas/vestido-cinza.jpg", url: "", tipo: "post" },
+    { titulo: "", categoria: "saude", capa: "assets/img/capas/skate.jpg", url: "", tipo: "post" },
+    { titulo: "", categoria: "viagem", capa: "assets/img/capas/trem.jpg", url: "", tipo: "post" },
+    { titulo: "", categoria: "beleza", capa: "assets/img/capas/praia-lenco.jpg", url: "", tipo: "post" },
+    { titulo: "", categoria: "criacoes", capa: "assets/img/capas/exposicao.jpg", url: "", tipo: "post" }
+  ],
 
   /*
    * Marcas. Logotipos em assets/img/logos/ (SVG ou PNG transparente).

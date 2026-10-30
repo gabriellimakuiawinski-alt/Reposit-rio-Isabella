@@ -186,9 +186,12 @@
   }
 
   function cartaoTrabalho(trabalho, indice) {
-    var capa = foto(trabalho.capa, trabalho.titulo ? "Capa de " + trabalho.titulo : "", TONS[indice % TONS.length]);
+    var descricaoImagem = trabalho.titulo || ("Isa em " + nomeCategoria(trabalho.categoria));
+    var capa = foto(trabalho.capa, descricaoImagem, TONS[indice % TONS.length]);
     capa.classList.add("trabalho__capa");
-    capa.appendChild(el("span", { class: "trabalho__tipo", text: ROTULO_TIPO[trabalho.tipo] || "Publicação" }));
+    if (trabalho.url || trabalho.video) {
+      capa.appendChild(el("span", { class: "trabalho__tipo", text: ROTULO_TIPO[trabalho.tipo] || "Publicação" }));
+    }
 
     var legenda = el("div", { class: "trabalho__legenda" }, [
       el("span", { class: "trabalho__categoria", text: nomeCategoria(trabalho.categoria) }),
@@ -201,6 +204,9 @@
       alvo = el("button", { class: "trabalho", type: "button", "data-video": trabalho.video, "aria-label": "Assistir " + (trabalho.titulo || "vídeo") });
     } else if (trabalho.url) {
       alvo = el("a", { class: "trabalho", href: trabalho.url, target: "_blank", rel: "noopener", "aria-label": (trabalho.titulo || "Trabalho") + " (abre a publicação original em nova aba)" });
+    } else if (trabalho.capa) {
+      // Sem link: a foto abre ampliada no próprio site.
+      alvo = el("button", { class: "trabalho", type: "button", "data-imagem": trabalho.capa, "data-alt": descricaoImagem, "aria-label": "Ampliar foto: " + descricaoImagem });
     } else {
       alvo = el("div", { class: "trabalho" });
     }
@@ -333,10 +339,14 @@
     var origem = null;
 
     galeria.addEventListener("click", function (e) {
-      var botao = e.target.closest("[data-video]");
+      var botao = e.target.closest("[data-video], [data-imagem]");
       if (!botao) return;
       origem = botao;
-      midia.replaceChildren(el("video", { src: botao.getAttribute("data-video"), controls: true, autoplay: true, playsinline: true }));
+      if (botao.hasAttribute("data-video")) {
+        midia.replaceChildren(el("video", { src: botao.getAttribute("data-video"), controls: true, autoplay: true, playsinline: true }));
+      } else {
+        midia.replaceChildren(el("img", { src: botao.getAttribute("data-imagem"), alt: botao.getAttribute("data-alt") || "" }));
+      }
       visor.showModal();
     });
 
@@ -456,7 +466,7 @@
     if (!topo || !hero) return;
     var ultimo = null;
     function verificar() {
-      var rolou = window.scrollY > hero.offsetHeight - 80;
+      var rolou = window.scrollY > 40;
       if (rolou !== ultimo) { topo.classList.toggle("topo--solido", rolou); ultimo = rolou; }
     }
     window.addEventListener("scroll", verificar, { passive: true });
@@ -480,6 +490,28 @@
     }, { passive: true });
   }
 
+  /* Vídeos do mar: tocam só quando estão na tela */
+  function iniciarMar() {
+    var videos = document.querySelectorAll("[data-video-mar]");
+    if (!videos.length) return;
+    if (reduzirMovimento || !("IntersectionObserver" in window)) {
+      videos.forEach(function (v) { if (v.hasAttribute("poster")) v.setAttribute("controls", ""); });
+      return;
+    }
+    var observador = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (entrada) {
+        var v = entrada.target;
+        if (entrada.isIntersecting) {
+          var tocando = v.play();
+          if (tocando && tocando.catch) tocando.catch(function () {});
+        } else {
+          v.pause();
+        }
+      });
+    }, { rootMargin: "100px 0px" });
+    videos.forEach(function (v) { observador.observe(v); });
+  }
+
   var ano = document.querySelector("[data-ano]");
   if (ano) ano.textContent = new Date().getFullYear();
 
@@ -493,5 +525,6 @@
   iniciarRevelarPalavras();
   iniciarTopo();
   iniciarParallaxHero();
+  iniciarMar();
   iniciarEntrada();
 })();
