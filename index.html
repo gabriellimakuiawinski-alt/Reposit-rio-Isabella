@@ -220,8 +220,33 @@
           <p class="contato__texto surgir">Tem uma ideia, um projeto ou uma marca que combina com o meu universo? Vamos conversar!</p>
           <div class="contato__acoes surgir" data-contato></div>
         </div>
-        <figure class="contato__arco surgir">
-          <video data-video-mar src="assets/video/mar.mp4" poster="assets/img/fotos/mar-poster.jpg" muted loop playsinline preload="metadata" aria-label="Vídeo da Isa na beira do mar"></video>
+        <figure class="contato__arco" data-mare>
+          <div class="contato__janela">
+            <video data-video-mar src="assets/video/mar.mp4" poster="assets/img/fotos/mar-poster.jpg" muted loop playsinline preload="metadata" aria-label="Vídeo da Isa na beira do mar"></video>
+            <!-- Onda de espuma que sobe e revela o vídeo -->
+            <div class="mare" aria-hidden="true">
+              <svg class="mare__fundo" viewBox="0 0 800 120" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="espuma-gradiente" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#FAF8F3" stop-opacity=".95"/>
+                    <stop offset=".45" stop-color="#F2F1EB" stop-opacity=".55"/>
+                    <stop offset="1" stop-color="#E9ECE6" stop-opacity="0"/>
+                  </linearGradient>
+                  <linearGradient id="agua-gradiente" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#C4D2CC" stop-opacity=".7"/>
+                    <stop offset="1" stop-color="#C4D2CC" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path class="mare__agua" d="M0 40 C 130 70 270 10 400 40 S 670 70 800 40 V120 H0 Z"/>
+                <path class="mare__espuma" d="M0 58 C 130 80 270 36 400 58 S 670 80 800 58 V120 H0 Z" opacity=".55"/>
+              </svg>
+              <svg viewBox="0 0 800 120" preserveAspectRatio="none">
+                <path class="mare__agua" d="M0 52 C 100 22 200 82 300 52 S 500 22 600 52 S 700 82 800 52 V120 H0 Z"/>
+                <path class="mare__espuma" d="M0 62 C 100 40 200 86 300 62 S 500 40 600 62 S 700 86 800 62 V120 H0 Z"/>
+                <path class="mare__crista" d="M0 70 C 100 54 200 90 300 70 S 500 54 600 70 S 700 90 800 70"/>
+              </svg>
+            </div>
+          </div>
         </figure>
       </div>
     </section>

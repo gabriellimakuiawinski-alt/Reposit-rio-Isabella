@@ -536,6 +536,38 @@
     }, { passive: true });
   }
 
+  /* Maré: quando o contato entra na tela, a onda sobe e revela o vídeo */
+  function iniciarMare() {
+    var arco = document.querySelector("[data-mare]");
+    var secao = document.getElementById("contato");
+    if (!arco || !secao) return;
+    if (reduzirMovimento || !("IntersectionObserver" in window)) {
+      arco.classList.add("mare-subiu");
+      secao.classList.add("mar-chegou");
+      return;
+    }
+    // Sem @property o --mare não anima; nesse caso o vídeo só aparece.
+    if (!(window.CSS && CSS.registerProperty)) {
+      var janela = arco.querySelector(".contato__janela");
+      if (janela) janela.style.setProperty("--mare", "0%");
+    }
+    new IntersectionObserver(function (entradas, obs) {
+      entradas.forEach(function (entrada) {
+        if (!entrada.isIntersecting) return;
+        if (entrada.target === secao) secao.classList.add("mar-chegou");
+        else arco.classList.add("mare-subiu");
+        obs.unobserve(entrada.target);
+      });
+    }, { threshold: [0.25] }).observe(secao);
+    new IntersectionObserver(function (entradas, obs) {
+      entradas.forEach(function (entrada) {
+        if (!entrada.isIntersecting) return;
+        arco.classList.add("mare-subiu");
+        obs.disconnect();
+      });
+    }, { threshold: 0.45 }).observe(arco);
+  }
+
   /* Vídeos do mar: tocam só quando estão na tela */
   function iniciarMar() {
     var videos = document.querySelectorAll("[data-video-mar]");
@@ -573,5 +605,6 @@
   iniciarTopo();
   iniciarParallaxHero();
   iniciarMar();
+  iniciarMare();
   iniciarEntrada();
 })();
