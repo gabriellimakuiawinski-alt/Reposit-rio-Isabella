@@ -381,7 +381,9 @@ strong { font-weight: 500; color: var(--espresso); }
 
 @media (max-width: 899px) {
   .hero__quadro { height: calc(100svh - var(--topo) - .6rem); }
-  .hero__midia img { object-position: 58% 30%; }
+  .hero__midia img { object-position: 48.5% 30%; }
+  /* Deixa espaço para o botão de menu fixo não cobrir o rótulo de baixo */
+  .hero__conteudo > .hero__linhas:last-child { padding-right: 8.5rem; }
   .hero__nome { font-size: clamp(2.4rem, 12.4vw, 6rem); }
   .hero__rotulo { letter-spacing: .24em; font-size: .6875rem; }
   .selo { top: 17%; left: auto; right: 6%; width: 5.75rem; }
