@@ -25,7 +25,7 @@
   --secao: clamp(5rem, 11vw, 10rem);
   --topo: 4.5rem;
 
-  --suave: cubic-bezier(.22, .68, .16, 1);
+  --suave: cubic-bezier(.16, 1, .3, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -160,12 +160,16 @@ strong { font-weight: 500; color: var(--espresso); }
   letter-spacing: .2em;
   text-transform: uppercase;
   text-decoration: none;
-  transition: background-color .35s ease, color .35s ease, transform .35s var(--suave);
+  background-image: linear-gradient(var(--latao), var(--latao));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
+  transition: background-size .7s var(--suave), color .5s ease, transform .5s var(--suave);
 }
-.botao:hover { background: var(--latao); color: var(--espresso); }
+.botao:hover { background-size: 100% 100%; color: var(--espresso); }
 .botao:active { transform: translateY(1px); }
 .botao--claro { background: var(--off); color: var(--espresso); }
-.botao--claro:hover { background: var(--latao-claro); }
+.botao--claro { background-image: linear-gradient(var(--latao-claro), var(--latao-claro)); }
 
 .link-sublinhado { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .35em; }
 
@@ -182,8 +186,9 @@ strong { font-weight: 500; color: var(--espresso); }
   height: var(--topo);
   padding: 0 var(--lateral);
   color: var(--espresso);
-  transition: background-color .4s ease, box-shadow .4s ease;
+  transition: background-color .5s ease, box-shadow .5s ease, transform .7s var(--suave);
 }
+.topo--oculto { transform: translateY(-100%); }
 .topo--solido {
   background: rgba(245, 241, 233, .94);
   -webkit-backdrop-filter: blur(10px);
@@ -387,12 +392,15 @@ strong { font-weight: 500; color: var(--espresso); }
 .js .hero__linhas, .js .hero__pre, .js .selo { opacity: 0; }
 .js .hero__midia .foto { transform: scale(1.12); }
 
-.carregado .hero__palavra { transform: none; transition: transform 1.3s var(--suave) .2s; }
-.carregado .hero__palavra--2 { transition-delay: .35s; }
+.carregado .hero__palavra { transform: none; transition: transform 1.8s var(--suave) .25s; }
+.carregado .hero__palavra--2 { transition-delay: .45s; }
 .carregado .hero__linhas,
 .carregado .hero__pre,
 .carregado .selo { opacity: 1; transition: opacity 1.2s ease .9s; }
-.carregado .hero__midia .foto { transform: none; transition: transform 2.4s var(--suave); }
+.carregado .hero__midia .foto { transform: none; transition: transform 3s var(--suave); }
+/* Depois da entrada, a foto respira com um zoom bem lento */
+.carregado .hero__midia img { animation: respirar 24s ease-in-out 3s infinite alternate; }
+@keyframes respirar { from { transform: scale(1); } to { transform: scale(1.07); } }
 
 /* Faixa de serviços (marquee) ----------------------------------------------- */
 
@@ -730,7 +738,6 @@ button.trabalho:hover .trabalho__capa img { transform: scale(1.04); }
 }
 .galeria__vazio .link-sublinhado { font-family: var(--sans); font-style: normal; font-size: 1rem; }
 
-.js .galeria__lista .trabalho { animation: surgir-blur .9s var(--suave) both; animation-delay: calc(var(--i, 0) * 70ms); }
 
 /* Visor */
 .visor {
@@ -1076,15 +1083,60 @@ button.trabalho:hover .trabalho__capa img { transform: scale(1.04); }
   from { opacity: 0; filter: blur(8px); transform: translateY(18px); }
   to { opacity: 1; filter: blur(0); transform: none; }
 }
-.js .surgir { opacity: 0; filter: blur(8px); transform: translateY(18px); }
+.js .surgir { opacity: 0; filter: blur(8px); transform: translateY(28px); }
 .js .surgir.visivel {
   opacity: 1;
   filter: blur(0);
   transform: none;
-  transition: opacity 1s ease, filter 1s ease, transform 1.1s var(--suave);
+  transition: opacity 1.4s ease var(--atraso, 0s), filter 1.4s ease var(--atraso, 0s), transform 1.6s var(--suave) var(--atraso, 0s);
 }
-.js .colagem__foto.surgir.visivel:nth-of-type(2) { transition-delay: .15s; }
-.js .colagem__foto.surgir.visivel:nth-of-type(3) { transition-delay: .3s; }
+
+/* Títulos: palavra por palavra, saindo de uma máscara */
+.titulo-palavra {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding: 0 .06em .12em 0;
+  margin-bottom: -.12em;
+}
+.titulo-palavra > span { display: inline-block; }
+.js .titulo-animado .titulo-palavra > span { transform: translateY(112%) rotate(4deg); transform-origin: left bottom; }
+.js .titulo-animado.visivel .titulo-palavra > span {
+  transform: none;
+  transition: transform 1.5s var(--suave) calc(var(--j, 0) * 85ms + var(--atraso, 0s));
+}
+
+/* Fotos: cortina de baixo para cima, depois parallax */
+@property --escala {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1.12;
+}
+.colagem__foto img,
+.frase__foto img,
+.faixa-foto img {
+  transform: translate3d(0, var(--py, 0px), 0) scale(var(--escala));
+  will-change: transform;
+}
+.js .revelar-foto { clip-path: inset(100% 0 0 0); --escala: 1.32; }
+.js .revelar-foto.visivel {
+  clip-path: inset(0 0 0 0);
+  --escala: 1.12;
+  transition: clip-path 1.7s var(--suave) var(--atraso, 0s), --escala 2.8s var(--suave) var(--atraso, 0s);
+}
+.js .revelar-foto.revelada { clip-path: none; }
+
+/* Arcos se abrem a partir da base */
+.js .arcos { clip-path: circle(0% at 50% 100%); }
+.js .arcos.visivel { clip-path: circle(85% at 50% 100%); transition: clip-path 2.8s var(--suave) .2s; }
+
+/* Listas em cascata (galeria, marcas, cupons, serviços) */
+.js .em-cascata { opacity: 0; transform: translateY(36px); }
+.js .em-cascata.visivel {
+  opacity: 1;
+  transform: none;
+  transition: opacity 1.2s ease var(--atraso, 0s), transform 1.4s var(--suave) var(--atraso, 0s);
+}
 
 /* Movimento reduzido -------------------------------------------------------- */
 
@@ -1101,6 +1153,11 @@ button.trabalho:hover .trabalho__capa img { transform: scale(1.04); }
   .js .hero__linhas, .js .hero__pre, .js .selo { opacity: 1; }
   .js .hero__midia .foto { transform: none; }
   .js .surgir { opacity: 1; filter: none; transform: none; }
+  .js .titulo-animado .titulo-palavra > span { transform: none; }
+  .js .revelar-foto { clip-path: none; --escala: 1.12; }
+  .js .arcos { clip-path: none; }
+  .js .em-cascata { opacity: 1; transform: none; }
+  .carregado .hero__midia img { animation: none; }
   .js .contato__janela { --mare: 0%; }
   .js .contato__arco video { filter: none; transform: none; }
   .js .contato__arco::before { opacity: 1; transform: translate(1rem, -1rem); }

@@ -149,6 +149,8 @@
       ]));
     });
 
+    cascata(lista.children, 5);
+
     function mostrarQuadro(i) {
       quadros.forEach(function (q, j) { q.classList.toggle("ativo", j === i); });
     }
@@ -270,6 +272,7 @@
         return;
       }
       galeria.replaceChildren(lista);
+      cascata(Array.prototype.map.call(lista.children, function (li) { return li.firstChild; }), 4);
     }
 
     function selecionar(botao, focar) {
@@ -380,6 +383,7 @@
       }
       grade.appendChild(item);
     });
+    cascata(grade.children, 6);
   }
 
   /* Cupons: toque para copiar */
@@ -411,6 +415,7 @@
       ]);
       grade.appendChild(el("li", null, [botao]));
     });
+    cascata(grade.children, 5);
 
     grade.addEventListener("click", function (e) {
       var botao = e.target.closest(".cupom");
@@ -456,22 +461,107 @@
     }
   }
 
-  /* Entrada com desfoque (inspirado em blur-fade) */
-  function iniciarSurgir() {
-    var alvos = document.querySelectorAll(".surgir");
-    if (reduzirMovimento || !("IntersectionObserver" in window)) {
-      alvos.forEach(function (a) { a.classList.add("visivel"); });
-      return;
+  /* Animações ao rolar ---------------------------------------------------- */
+  var observadorAnima = null;
+
+  function revelar(alvo) {
+    alvo.classList.add("visivel");
+    // Depois da cortina, tira o recorte para a sombra da foto voltar.
+    if (alvo.classList.contains("revelar-foto")) {
+      setTimeout(function () { alvo.classList.add("revelada"); }, 2600);
     }
-    var observador = new IntersectionObserver(function (entradas) {
-      entradas.forEach(function (entrada) {
-        if (entrada.isIntersecting) {
-          entrada.target.classList.add("visivel");
-          observador.unobserve(entrada.target);
-        }
+  }
+
+  function observar(alvos) {
+    Array.prototype.forEach.call(alvos, function (a) {
+      if (!observadorAnima) revelar(a);
+      else observadorAnima.observe(a);
+    });
+  }
+
+  // Itens de uma lista entram um depois do outro (inspirado em blur-fade com atraso).
+  function cascata(itens, porLinha) {
+    Array.prototype.forEach.call(itens, function (item, i) {
+      item.classList.add("em-cascata");
+      item.style.setProperty("--atraso", ((i % (porLinha || 4)) * 0.09).toFixed(2) + "s");
+    });
+    observar(itens);
+  }
+
+  // Títulos sobem palavra por palavra, saindo de uma máscara.
+  function dividirTitulos() {
+    document.querySelectorAll(".titulo, .sobre__ola, .rodape__marca").forEach(function (t) {
+      var texto = t.textContent.trim();
+      if (!t.hasAttribute("aria-hidden")) t.setAttribute("aria-label", texto);
+      t.textContent = "";
+      texto.split(/\s+/).forEach(function (palavra, j) {
+        var mascara = el("span", { class: "titulo-palavra", "aria-hidden": "true" }, [el("span", { text: palavra })]);
+        mascara.style.setProperty("--j", j);
+        t.appendChild(mascara);
+        t.appendChild(document.createTextNode(" "));
       });
-    }, { rootMargin: "0px 0px -8% 0px" });
-    alvos.forEach(function (a) { observador.observe(a); });
+      t.classList.remove("surgir");
+      t.classList.add("titulo-animado");
+    });
+  }
+
+  function iniciarAnimacoes() {
+    dividirTitulos();
+
+    if (!reduzirMovimento && "IntersectionObserver" in window) {
+      observadorAnima = new IntersectionObserver(function (entradas) {
+        entradas.forEach(function (entrada) {
+          if (entrada.isIntersecting) {
+            revelar(entrada.target);
+            observadorAnima.unobserve(entrada.target);
+          }
+        });
+      }, { rootMargin: "0px 0px -10% 0px" });
+    }
+
+    // Elementos irmãos entram em sequência.
+    document.querySelectorAll(".surgir, .revelar-foto").forEach(function (a) {
+      var irmaos = Array.prototype.filter.call(a.parentNode.children, function (x) {
+        return x.classList.contains("surgir") || x.classList.contains("revelar-foto") || x.classList.contains("titulo-animado");
+      });
+      var i = irmaos.indexOf(a);
+      if (i > 0) a.style.setProperty("--atraso", (i * 0.14).toFixed(2) + "s");
+    });
+
+    observar(document.querySelectorAll(".surgir, .revelar-foto, .titulo-animado, .arcos"));
+  }
+
+  /* Parallax suave nas fotos: cada uma anda numa velocidade */
+  function iniciarParallax() {
+    if (reduzirMovimento) return;
+    var itens = [];
+    document.querySelectorAll(".sobre__colagem, .fora__colagem").forEach(function (colagem) {
+      colagem.querySelectorAll(".colagem__foto img").forEach(function (img, i) {
+        itens.push({ el: img, v: [0.05, 0.11, 0.17][i % 3] });
+      });
+    });
+    document.querySelectorAll(".frase__foto img, .faixa-foto img").forEach(function (img) {
+      itens.push({ el: img, v: 0.12 });
+    });
+    if (!itens.length) return;
+
+    var agendado = false;
+    function atualizar() {
+      agendado = false;
+      var alto = window.innerHeight;
+      itens.forEach(function (item) {
+        var r = item.el.parentNode.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > alto + 200) return;
+        var deslocamento = (r.top + r.height / 2 - alto / 2) * -item.v;
+        deslocamento = Math.max(-70, Math.min(70, deslocamento));
+        item.el.style.setProperty("--py", deslocamento.toFixed(1) + "px");
+      });
+    }
+    window.addEventListener("scroll", function () {
+      if (!agendado) { agendado = true; requestAnimationFrame(atualizar); }
+    }, { passive: true });
+    window.addEventListener("resize", atualizar);
+    atualizar();
   }
 
   /* Frase que acende palavra por palavra ao rolar (inspirado em text-reveal, sem prender a rolagem) */
@@ -511,9 +601,16 @@
     var hero = document.getElementById("inicio");
     if (!topo || !hero) return;
     var ultimo = null;
+    var ultimoY = window.scrollY;
     function verificar() {
-      var rolou = window.scrollY > 40;
+      var y = window.scrollY;
+      var rolou = y > 40;
       if (rolou !== ultimo) { topo.classList.toggle("topo--solido", rolou); ultimo = rolou; }
+      // Some ao descer e volta ao subir, para as fotos respirarem.
+      if (Math.abs(y - ultimoY) > 6) {
+        topo.classList.toggle("topo--oculto", y > ultimoY && y > 400 && !document.documentElement.classList.contains("menu-aberto"));
+        ultimoY = y;
+      }
     }
     window.addEventListener("scroll", verificar, { passive: true });
     window.addEventListener("resize", verificar);
@@ -593,6 +690,7 @@
   var ano = document.querySelector("[data-ano]");
   if (ano) ano.textContent = new Date().getFullYear();
 
+  iniciarAnimacoes();
   iniciarMenu();
   iniciarFaixa();
   iniciarServicos();
@@ -600,7 +698,7 @@
   iniciarMarcas();
   iniciarCupons();
   iniciarContato();
-  iniciarSurgir();
+  iniciarParallax();
   iniciarRevelarPalavras();
   iniciarTopo();
   iniciarParallaxHero();
